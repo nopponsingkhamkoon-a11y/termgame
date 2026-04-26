@@ -35,7 +35,7 @@ export async function POST(req) {
     // fs.writeFileSync(filePath, buffer); // บันทึกไฟล์ลงเครื่อง
 
     // // Path ที่จะเก็บลง Database (ต้องขึ้นต้นด้วย /uploads/ เพื่อให้กดดูได้)
-    // const dbPath = `/uploads/${fileName}`;
+    const dbPath = `/uploads/${fileName}`;
 
     // --- ส่วนการบันทึกลง Database ---
     const query = `
