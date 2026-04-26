@@ -1,0 +1,97 @@
+.history-container {
+    max-width: 700px;
+    margin: 60px auto;
+    padding: 30px;
+    background: rgba(10, 10, 20, 0.8); /* สีดำโปร่งแสง */
+    border-radius: 20px;
+    backdrop-filter: blur(10px); /* ทำเอฟเฟกต์กระจกฝ้า */
+    border: 1px solid rgba(0, 255, 204, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    color: white;
+    min-height: 400px;
+}
+
+/* แก้ไขพื้นหลังของหน้าเว็บทั้งหมดไม่ให้เป็นบาร์โค้ด */
+body {
+    background: #05050a; /* สีพื้นหลังหลัก */
+    background-image: radial-gradient(circle at top right, #003322 0%, #05050a 50%);
+    background-attachment: fixed;
+    margin: 0;
+}
+
+h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 30px;
+    color: #00ffcc;
+    text-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+}
+
+.order-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: 0.3s;
+}
+
+.order-item:hover {
+    background: rgba(255, 255, 255, 0.07);
+    transform: scale(1.02);
+}
+
+.game-name {
+    display: block;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #00ffcc;
+}
+
+.player-id {
+    display: block;
+    font-size: 0.9rem;
+    color: #888;
+    margin-top: 5px;
+}
+
+.date {
+    display: block;
+    font-size: 0.8rem;
+    color: #555;
+    margin-top: 5px;
+}
+
+.item-status {
+    text-align: right;
+}
+
+.amount {
+    display: block;
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.status-text {
+    display: inline-block;
+    padding: 5px 15px;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+/* สีสถานะ */
+.status-text.รอเติม { background: #f1c40f; color: #000; }
+.status-text.สำเร็จ { background: #2ecc71; color: #fff; }
+.status-text.ยกเลิก { background: #e74c3c; color: #fff; }
+
+.loading {
+    color: #00ffcc;
+    text-align: center;
+    font-size: 1.5rem;
+    margin-top: 100px;
+}

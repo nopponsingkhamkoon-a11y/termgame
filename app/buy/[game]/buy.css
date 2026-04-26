@@ -1,0 +1,274 @@
+/* --- 1. Global & Layout --- */
+.buy-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+.buy-card {
+    width: 100%;
+    max-width: 550px;
+    background: rgba(20, 20, 25, 0.65);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+    color: white;
+    animation: slideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- 2. Typography & Headers --- */
+.game-header {
+    text-align: center;
+    margin-bottom: 35px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.game-header h1 {
+    margin: 0 0 10px;
+    font-size: 2.2rem;
+    font-weight: 800;
+    background: linear-gradient(90deg, #00ffcc, #b056ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.game-header p {
+    color: #8892b0;
+    font-size: 0.95rem;
+}
+
+/* --- 3. Form Elements --- */
+.input-group, .package-section, .upload-section {
+    margin-bottom: 25px;
+}
+
+label {
+    display: block;
+    margin-bottom: 12px;
+    color: #a8b2d1;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: #fff;
+    font-size: 1rem;
+    transition: 0.3s;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.input-group input:focus {
+    border-color: #b056ff;
+    box-shadow: 0 0 15px rgba(176, 86, 255, 0.2);
+}
+
+.package-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* แถวละ 1 อันจะดูพรีเมียมกว่า หรือใช้ 1fr 1fr ถ้าอยากได้ 2 คอลัมน์ */
+    gap: 12px;
+}
+
+.package-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between; /* 🌟 แยกซ้าย-ขวา */
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.package-card:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(0, 255, 204, 0.4);
+    transform: translateX(5px); /* เลื่อนขวานิดๆ ตอนจ่อ */
+}
+
+.package-card.active {
+    background: rgba(0, 255, 204, 0.1);
+    border: 2px solid #00ffcc;
+    box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
+}
+
+.package-content {
+    display: flex;
+    flex-direction: column; /* 🌟 ชื่ออยู่บน ราคาอยู่ล่าง */
+    gap: 4px;
+}
+
+.package-name {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #a8b2d1;
+}
+
+.package-card.active .package-name {
+    color: #fff;
+}
+
+.package-price {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #00ffcc; /* สีเขียวนีออน */
+}
+
+/* วงกลมเลือกด้านขวา */
+.package-check {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    position: relative;
+}
+
+.package-check.checked {
+    border-color: #00ffcc;
+    background: #00ffcc;
+}
+
+.package-check.checked::after {
+    content: "✓";
+    color: #000;
+    font-size: 12px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;
+}
+
+/* --- 5. Payment & Bank Card --- */
+.payment-info {
+    margin: 25px 0;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.bank-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.bank-logo img {
+    width: 55px !important;
+    height: 55px !important;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.account-number {
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin: 5px 0;
+}
+
+.account-name {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.copy-btn {
+    background: rgba(0, 255, 204, 0.1);
+    border: 1px solid #00ffcc;
+    color: #00ffcc;
+    padding: 6px 18px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.copy-btn:hover {
+    background: #00ffcc;
+    color: #000;
+}
+
+/* --- 6. Upload Section --- */
+.file-label {
+    display: block;
+    cursor: pointer;
+}
+
+.upload-box {
+    background: rgba(0, 0, 0, 0.2);
+    border: 2px dashed rgba(255, 255, 255, 0.2);
+    padding: 30px;
+    border-radius: 16px;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.file-label:hover .upload-box {
+    border-color: #b056ff;
+    background: rgba(176, 86, 255, 0.05);
+}
+
+.upload-box span {
+    color: #8892b0;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+/* --- 7. Action Button --- */
+.confirm-btn {
+    width: 100%;
+    padding: 18px;
+    margin-top: 10px;
+    background: linear-gradient(135deg, #b056ff 0%, #00ffcc 100%);
+    border: none;
+    border-radius: 16px;
+    color: #000;
+    font-size: 1.1rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 10px 20px rgba(0, 255, 204, 0.2);
+}
+
+.confirm-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(0, 255, 204, 0.4);
+}
+
+.confirm-btn:active { transform: translateY(-1px); }
+
+.confirm-btn:disabled {
+    background: #2a2a2a;
+    color: #555;
+    cursor: not-allowed;
+    box-shadow: none;
+}

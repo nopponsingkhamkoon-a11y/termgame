@@ -1,0 +1,136 @@
+body {
+  margin: 0;
+  font-family: Arial;
+}
+
+/* พื้นหลัง */
+.auth-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at top, #4b1a7b, #100f0f);
+}
+
+/* กล่อง */
+.auth-box {
+  width: 320px;
+  padding: 40px;
+  color: white;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(15px);
+  text-align: center;
+  box-shadow: 0 0 25px rgba(46, 18, 85, 0.7);
+  animation: fadeIn 0.5s ease;
+}
+
+/* หัว */
+.auth-box h1 {
+  color: #fff;
+  margin-bottom: 5px;
+}
+
+/* input */
+.auth-box input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+}
+
+/* ปุ่ม */
+.auth-box button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #6a00ff, #00ffcc);
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.auth-box button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px #00ffcc;
+}
+
+/* link */
+.link {
+  margin-top: 15px;
+   padding: 12px;
+  color: white;
+  font-size: 14px;
+}
+
+.link a {
+  color: #00ffcc;
+  text-decoration: none;
+}
+
+/* animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+/* input */
+.auth-box input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 10px;
+  border: none;
+  color: white;
+  outline: none;
+  background: rgba(244, 242, 242, 0.1);
+  color: white; /* ✅ ตัวหนังสือ */
+}
+
+/* placeholder */
+.auth-box input::placeholder {
+  color: #ffffff; /* ✅ สีเทา อ่านง่าย */
+}
+/* คอนเทนเนอร์ของข้อความล่างปุ่ม */
+.link-text {
+    margin-top: 25px;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6); /* สีขาวจางๆ ให้ดูไม่แย่งซีนปุ่มหลัก */
+    display: block;
+    line-height: 1.6;
+}
+
+/* ปรับแต่งลิงก์สมัครสมาชิก */
+.link-text a {
+    color: #00ffcc;
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 5px;
+    transition: all 0.3s ease;
+    position: relative;
+    padding-bottom: 2px;
+}
+
+/* เอฟเฟกต์เส้นใต้เรืองแสงเวลา Hover */
+.link-text a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: #00ffcc;
+    box-shadow: 0 0 8px #00ffcc;
+    transition: width 0.3s ease;
+}
+
+.link-text a:hover {
+    color: #fff;
+    text-shadow: 0 0 10px rgba(0, 255, 204, 0.8);
+}
+
+.link-text a:hover::after {
+    width: 100%;
+}
