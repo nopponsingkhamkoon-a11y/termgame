@@ -20,22 +20,22 @@ export async function POST(req) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // ตั้งชื่อไฟล์ใหม่โดยใช้ Timestamp เพื่อไม่ให้ชื่อซ้ำกัน
-    const fileName = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+    // // ตั้งชื่อไฟล์ใหม่โดยใช้ Timestamp เพื่อไม่ให้ชื่อซ้ำกัน
+    // const fileName = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
     
-    // กำหนด Path ไปที่ public/uploads (เพื่อให้ Next.js เข้าถึงได้ผ่าน URL)
-    const uploadDir = path.join(process.cwd(), "public", "uploads");
+    // // กำหนด Path ไปที่ public/uploads (เพื่อให้ Next.js เข้าถึงได้ผ่าน URL)
+    // const uploadDir = path.join(process.cwd(), "public", "uploads");
 
-    // สร้างโฟลเดอร์ถ้ายังไม่มี
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
+    // // สร้างโฟลเดอร์ถ้ายังไม่มี
+    // if (!fs.existsSync(uploadDir)) {
+    //   fs.mkdirSync(uploadDir, { recursive: true });
+    // }
 
-    const filePath = path.join(uploadDir, fileName);
-    fs.writeFileSync(filePath, buffer); // บันทึกไฟล์ลงเครื่อง
+    // const filePath = path.join(uploadDir, fileName);
+    // fs.writeFileSync(filePath, buffer); // บันทึกไฟล์ลงเครื่อง
 
-    // Path ที่จะเก็บลง Database (ต้องขึ้นต้นด้วย /uploads/ เพื่อให้กดดูได้)
-    const dbPath = `/uploads/${fileName}`;
+    // // Path ที่จะเก็บลง Database (ต้องขึ้นต้นด้วย /uploads/ เพื่อให้กดดูได้)
+    // const dbPath = `/uploads/${fileName}`;
 
     // --- ส่วนการบันทึกลง Database ---
     const query = `
