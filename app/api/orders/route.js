@@ -1,6 +1,12 @@
 import { db } from "@/lib/db";
-import fs from "fs";
-import path from "path";
+import { v2 as cloudinary } from 'cloudinary';
+
+// ตั้งค่า Cloudinary (ดึงค่าจาก Environment Variables ใน Vercel)
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 export async function POST(req) {
   try {
@@ -10,53 +16,44 @@ export async function POST(req) {
     const playerId = data.get("playerId");
     const gameName = data.get("gameName");
     const amount = data.get("amount");
-    const file = data.get("slip"); // ดึงไฟล์จากชื่อ "slip" ที่หน้าบ้านส่งมา
+    const file = data.get("slip");
 
-    if (!file) {
-      return Response.json({ success: false, error: "กรุณาแนบสลิป" });
+    // 1. Validation: ตรวจสอบความพร้อมของข้อมูล
+    if (!file || !userId || !playerId) {
+      return Response.json({ success: false, error: "ข้อมูลไม่ครบถ้วน หรือไม่ได้แนบสลิป" });
     }
 
-    // --- ส่วนการจัดการบันทึกไฟล์ลงเครื่อง ---
+    // 2. Cloudinary Upload Logic: แปลงไฟล์และส่งขึ้น Cloud
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // // ตั้งชื่อไฟล์ใหม่โดยใช้ Timestamp เพื่อไม่ให้ชื่อซ้ำกัน
-    // const fileName = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
-    
-    // // กำหนด Path ไปที่ public/uploads (เพื่อให้ Next.js เข้าถึงได้ผ่าน URL)
-    // const uploadDir = path.join(process.cwd(), "public", "uploads");
+    const uploadResponse = await new Promise((resolve, reject) => {
+      cloudinary.uploader.upload_stream(
+        { 
+          folder: "game_slips", // จัดกลุ่มรูปใน Cloudinary
+          resource_type: "image"
+        }, 
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      ).end(buffer);
+    });
 
-    // // สร้างโฟลเดอร์ถ้ายังไม่มี
-    // if (!fs.existsSync(uploadDir)) {
-    //   fs.mkdirSync(uploadDir, { recursive: true });
-    // }
+    // 3. Database Logic: บันทึก URL ที่ได้จาก Cloudinary ลง TiDB
+    const dbPath = uploadResponse.secure_url; // ลิงก์รูปภาพตัวจริง (https://...)
 
-    // const filePath = path.join(uploadDir, fileName);
-    // fs.writeFileSync(filePath, buffer); // บันทึกไฟล์ลงเครื่อง
-
-    // // Path ที่จะเก็บลง Database (ต้องขึ้นต้นด้วย /uploads/ เพื่อให้กดดูได้)
-    const fileName = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
-    const dbPath = `/uploads/${fileName}`;
-
-
-    // --- ส่วนการบันทึกลง Database ---
     const query = `
       INSERT INTO orders (userId, playerId, game, amount, slip, status) 
       VALUES (?, ?, ?, ?, ?, 'รอเติม')
     `;
 
-    await db.query(query, [
-      userId, 
-      playerId, 
-      gameName, 
-      amount, 
-      dbPath // บันทึก path ของรูปที่บันทึกจริง
-    ]);
+    await db.query(query, [userId, playerId, gameName, amount, dbPath]);
 
     return Response.json({ success: true });
 
   } catch (error) {
-    console.error("Server Error:", error);
+    console.error("Payment Confirmation Error:", error);
     return Response.json({ 
       success: false, 
       error: "เกิดข้อผิดพลาด: " + error.message 
