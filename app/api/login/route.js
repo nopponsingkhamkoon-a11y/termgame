@@ -23,7 +23,7 @@ export async function POST(req) {
       return Response.json({ error: "รหัสผิด" }, { status: 401 });
     }
 
-    // ✅ แก้ไขตรงนี้: ส่ง object user กลับไปให้ครบตามโครงสร้าง DB ของคุณ
+    //  แก้ไขตรงนี้: ส่ง object user กลับไปให้ครบตามโครงสร้าง DB ของคุณ
     return Response.json({ 
       success: true, 
       user: {
