@@ -22,14 +22,17 @@ export default function AdminDashboard() {
   const [editPkg, setEditPkg] = useState(null);
 
   // ดึงชื่อจากคนที่ Login จริงๆ (ตอนนี้ตั้งเป็นค่าเริ่มต้นไว้)
-  const [adminName, setAdminName] = useState("Admin_A");
+  const [adminName, setAdminName] = useState("");
 
   useEffect(() => {
-    // สมมติว่าคุณเก็บชื่อไว้ใน localStorage หลัง Login สำเร็จ
-  const savedAdmin = localStorage.getItem("adminUsername");
+  // ดึงชื่อที่เก็บไว้ตอน Login (สมมติเก็บใน localStorage)
+  const savedAdmin = localStorage.getItem("username"); 
   if (savedAdmin) {
     setAdminName(savedAdmin);
+  } else {
+    setAdminName("Unknown Admin"); // กันเหนียวถ้าหาชื่อไม่เจอ
   }
+
 
     fetchOrders();
     fetchGames();
@@ -181,6 +184,8 @@ export default function AdminDashboard() {
       alert("เชื่อมต่อ API ไม่ได้"); 
     }
   };
+
+  
 
   return (
     <div className="admin-layout">

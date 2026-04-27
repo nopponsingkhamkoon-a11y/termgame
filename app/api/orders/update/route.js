@@ -5,21 +5,19 @@ export async function POST(req) {
     const body = await req.json();
     
     // ดึงค่าตามชื่อที่ปรากฏใน Payload (id, status, adminName)
-    const orderId = body.id;
-    const orderStatus = body.status;
-    const admin = body.adminName || "Admin_A";
+    const { id, status, adminName } = await req.json();
 
-    const query = `
-      UPDATE orders 
-      SET status = ?, 
-          updated_by = ?, 
-          updated_at = NOW() 
-      WHERE id = ?
-    `;
+        // ใช้ชื่อที่ส่งมาบันทึกลงฐานข้อมูล
+        const query = `
+        UPDATE orders 
+        SET status = ?, 
+            updated_by = ?, 
+            updated_at = NOW() 
+        WHERE id = ?
+        `;
+        const [result] = await db.query(query, [status, adminName, id]);
 
-    // ลำดับต้องเรียงตาม ? : status, updated_by, id
-    // ใช้ตัวแปรที่ดึงมาข้างบนให้ถูกชื่อ
-    const [result] = await db.query(query, [orderStatus, admin, orderId]);
+   
 
     if (result.affectedRows > 0) {
       return Response.json({ success: true });
