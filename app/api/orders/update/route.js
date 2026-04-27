@@ -4,10 +4,10 @@ export async function POST(req) {
   try {
     const body = await req.json();
     
-    // 1. ดึงค่ามาพักไว้ในตัวแปร (ชื่อต้องตรงกับที่จะใช้ข้างล่าง)
+    // ดึงค่าตามชื่อที่ปรากฏใน Payload (id, status, adminName)
     const orderId = body.id;
-    const status = body.status; // ใช้ชื่อ status ให้ตรงกับใน array [ ] ด้านล่าง
-    const adminName = body.adminName || "Admin_A";
+    const orderStatus = body.status;
+    const admin = body.adminName || "Admin_A";
 
     const query = `
       UPDATE orders 
@@ -17,21 +17,18 @@ export async function POST(req) {
       WHERE id = ?
     `;
 
-    // 2. ลำดับใน [ ] ต้องตรงกับ ? ใน query: status -> ?, adminName -> ?, orderId -> ?
-    const [result] = await db.query(query, [status, adminName, orderId]);
+    // ลำดับต้องเรียงตาม ? : status, updated_by, id
+    // ใช้ตัวแปรที่ดึงมาข้างบนให้ถูกชื่อ
+    const [result] = await db.query(query, [orderStatus, admin, orderId]);
 
-    // 3. ตรวจสอบว่ามีแถวที่ถูกแก้ไขจริงไหม
-    if (result && result.affectedRows > 0) {
+    if (result.affectedRows > 0) {
       return Response.json({ success: true });
     } else {
-      return Response.json({ 
-        success: false, 
-        error: "ไม่พบรายการสั่งซื้อที่ระบุ (ID อาจไม่ตรงในระบบ)" 
-      });
+      return Response.json({ success: false, error: "No rows updated. Check ID." });
     }
 
   } catch (error) {
-    console.error("Update Error:", error.message);
+    console.error("Update Order Error:", error.message);
     return Response.json({ success: false, error: error.message }, { status: 500 });
   }
 }

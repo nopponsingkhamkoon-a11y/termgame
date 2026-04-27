@@ -64,11 +64,8 @@ export async function POST(req) {
 export async function GET() {
   try {
     // *** ต้องเพิ่ม updated_by และ updated_at เข้าไปใน SELECT ***
-    const query = `
-      SELECT id, username, playerId, game, amount, slip, status, updated_by, updated_at 
-      FROM orders 
-      ORDER BY id DESC
-    `;
+    // ต้องมั่นใจว่า SELECT เอา updated_by ออกมาด้วย
+const query = "SELECT id, username, playerId, game, amount, slip, status, updated_by, updated_at FROM orders ORDER BY id DESC";
     
     const [rows] = await db.query(query);
     
