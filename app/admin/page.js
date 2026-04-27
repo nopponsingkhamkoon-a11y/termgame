@@ -21,6 +21,9 @@ export default function AdminDashboard() {
   const [editGame, setEditGame] = useState(null);
   const [editPkg, setEditPkg] = useState(null);
 
+   // ดึงชื่อจากคนที่ Login จริงๆ
+  const [adminName, setAdminName] = useState("Admin_A");
+
   useEffect(() => {
     fetchOrders();
     fetchGames();
@@ -40,7 +43,8 @@ export default function AdminDashboard() {
     try {
       const res = await fetch("/api/admin/orders");
       const data = await res.json();
-      if (res.ok) setOrders(Array.isArray(data) ? data : []);
+      // ปรับให้รองรับข้อมูล orders ที่ส่งกลับมาพร้อม success status
+      if (res.ok) setOrders(data.orders || (Array.isArray(data) ? data : []));
     } catch (error) { console.error("Fetch error:", error); }
     finally { setLoading(false); }
   };
@@ -144,7 +148,11 @@ export default function AdminDashboard() {
       const res = await fetch("/api/admin/orders/update", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: orderId, status: newStatus }),
+        body: JSON.stringify({ 
+          id: orderId, 
+          status: newStatus,
+          adminName: adminName // ส่งชื่อ Admin ไปบันทึก
+        }),
       });
       if (res.ok) {
         fetchOrders();
@@ -189,7 +197,14 @@ export default function AdminDashboard() {
               <table className="admin-table">
                 <thead>
                   <tr>
-                    <th>ID</th><th>ลูกค้า</th><th>เกม</th><th>ยอดเงิน</th><th>สลิป</th><th>สถานะ</th><th>จัดการ</th>
+                    <th>ID</th>
+                    <th>ลูกค้า</th>
+                    <th>เกม</th>
+                    <th>ยอดเงิน</th>
+                    <th>สลิป</th>
+                    <th>สถานะ</th>
+                    <th>ผู้ดำเนินการ / เวลาอัปเดต</th> {/* คอลัมน์ที่เพิ่ม */}
+                    <th>จัดการ</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -206,6 +221,15 @@ export default function AdminDashboard() {
                       <td className="price-cell">{order.amount} ฿</td>
                       <td><a href={order.slip} target="_blank" rel="noreferrer" className="view-slip">🖼️ ดูสลิป</a></td>
                       <td><span className={`status-badge ${order.status}`}>{order.status}</span></td>
+                      <td>
+                        {/* แสดงข้อมูล Admin และเวลา */}
+                        <div className="admin-log">
+                          <div className="admin-user">{order.updated_by || "-"}</div>
+                          <div className="admin-time">
+                            {order.updated_at ? new Date(order.updated_at).toLocaleString("th-TH") : "รอดำเนินการ"}
+                          </div>
+                        </div>
+                      </td>
                       <td>
                         {order.status === "รอเติม" && (
                           <div className="action-btns">
@@ -242,9 +266,9 @@ export default function AdminDashboard() {
                       <td><img src={g.image_url} alt="" style={{ width: '50px' }} /></td>
                       <td>{g.name}</td>
                       <td>
-                      <button onClick={() => setEditGame(g)} className="btn-edit-small">แก้ไข</button>
-                      <button onClick={() => deleteGame(g.id)} className="btn-danger">ลบ</button>
-                    </td>
+                        <button onClick={() => setEditGame(g)} className="btn-edit-small">แก้ไข</button>
+                        <button onClick={() => deleteGame(g.id)} className="btn-danger">ลบ</button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>

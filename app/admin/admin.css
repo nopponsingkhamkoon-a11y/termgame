@@ -312,13 +312,47 @@ tr:hover { background: rgba(255, 255, 255, 0.01); }
 .modal-actions {
     display: flex;
     justify-content: flex-end;
-    gap: 15px; /* เพิ่มระยะห่างระหว่างปุ่มยกเลิกกับบันทึก */
+    gap: 5px; /* เพิ่มระยะห่างระหว่างปุ่มยกเลิกกับบันทึก */
     margin-top: 30px;
+}
+
+/* --- ปรับแต่งปุ่มเพิ่ม (Success Button) ให้ชัดเจน --- */
+.btn-success {
+    background-color: #00ffcc !important; /* สีเขียวนีออน */
+    color: #0a0514 !important; /* สีตัวหนังสือมืดเพื่อให้ตัดกับพื้นหลังเขียว */
+    padding: 2px 10px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important; /* ตัวหนาพิเศษ */
+    border: none !important;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 100px; /* กำหนดความกว้างขั้นต่ำ */
+    font-size: 0.9rem;
+    text-transform: uppercase; /* ทำให้เป็นตัวใหญ่ (ถ้าเป็นภาษาอังกฤษ) */
+    box-shadow: 0 0 10px rgba(0, 255, 204, 0.2); /* เงาเรืองแสงเบาๆ */
+}
+
+.btn-success:hover {
+    background-color: #00e6b8 !important; /* สีเข้มขึ้นนิดนึงตอนวางเมาส์ */
+    box-shadow: 0 0 20px rgba(0, 255, 204, 0.5); /* เรืองแสงแรงขึ้น */
+    transform: translateY(-2px); /* ลอยขึ้นนิดนึง */
+}
+
+/* ปรับระยะห่างในฟอร์มให้สมดุล */
+.dark-form form {
+    display: flex;
+    gap: 15px;
+    align-items: stretch; /* ให้ความสูงเท่ากันทั้งช่อง Input และปุ่ม */
+}
+
+.dark-form input, .dark-form select {
+    padding: 12px 15px !important;
+    font-size: 1rem !important;
 }
 
 .btn-cancel {
     background: rgba(255, 255, 255, 0.05) !important; /* พื้นหลังโปร่งแสงนิดๆ */
-    color: #9ca3af !important; /* สีเทาอ่อน */
+    color: #616a79 !important; /* สีเทาอ่อน */
     border: none; /* เส้นขอบบางๆ */
     padding: 10px 20px;
     border-radius: 8px;
@@ -327,7 +361,7 @@ tr:hover { background: rgba(255, 255, 255, 0.01); }
 }
 
 .btn-cancel:hover {
-    background: rgba(231, 76, 60, 0.1) !important; /* เปลี่ยนเป็นสีแดงจางๆ เมื่อ Hover */
+    background: rgba(113, 59, 59, 0.049) ; /* เปลี่ยนเป็นสีแดงจางๆ เมื่อ Hover */
     color: #e74c3c !important; /* เปลี่ยนตัวหนังสือเป็นสีแดง */
     border-color: #e74c3c !important; /* ขอบสีแดง */
     box-shadow: 0 0 15px rgba(231, 76, 60, 0.2);

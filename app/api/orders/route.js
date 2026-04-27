@@ -44,11 +44,11 @@ export async function POST(req) {
     const dbPath = uploadResponse.secure_url; // ลิงก์รูปภาพตัวจริง (https://...)
 
     const query = `
-      INSERT INTO orders (userId, playerId, game, amount, slip, status) 
-      VALUES (?, ?, ?, ?, ?, 'รอเติม')
-    `;
-
-    await db.query(query, [userId, playerId, gameName, amount, dbPath]);
+    INSERT INTO orders (userId, playerId, game, amount, slip, status) 
+    VALUES (?, ?, ?, ?, ?, 'รอเติม')
+  `;
+  // updated_by จะเป็น NULL โดยอัตโนมัติในฐานข้อมูลเมื่อสร้างใหม่
+  await db.query(query, [userId, playerId, gameName, amount, dbPath]);
 
     return Response.json({ success: true });
 
@@ -58,5 +58,23 @@ export async function POST(req) {
       success: false, 
       error: "เกิดข้อผิดพลาด: " + error.message 
     }, { status: 500 });
+  }
+}
+
+export async function GET() {
+  try {
+    // *** ต้องเพิ่ม updated_by และ updated_at เข้าไปใน SELECT ***
+    const query = `
+      SELECT id, username, playerId, game, amount, slip, status, updated_by, updated_at 
+      FROM orders 
+      ORDER BY id DESC
+    `;
+    
+    const [rows] = await db.query(query);
+    
+    // ตรวจสอบโครงสร้างข้อมูลที่ส่งกลับไปให้หน้า AdminDashboard
+    return Response.json({ success: true, orders: rows });
+  } catch (error) {
+    return Response.json({ success: false, error: error.message }, { status: 500 });
   }
 }
