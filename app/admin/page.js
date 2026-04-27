@@ -153,12 +153,13 @@ export default function AdminDashboard() {
   const updateStatus = async (orderId, newStatus) => {
     // ดักไว้ก่อน: ถ้า orderId มาเป็น "#150017" ให้ตัดเครื่องหมาย # ออก
     const cleanId = typeof orderId === "string" ? orderId.replace("#", "") : orderId;
+    const currentAdmin = localStorage.getItem("username") || adminName;
 
     console.log("--- กำลังส่งข้อมูลไป API ---");
     console.log("ID ที่ส่ง:", cleanId);
     console.log("สถานะที่จะเปลี่ยน:", newStatus);
 
-    if (!confirm(`ยืนยันการเปลี่ยนสถานะเป็น "${newStatus}"?`)) return;
+    if (!confirm(`ยืนยันการเปลี่ยนสถานะโดย ${currentAdmin}?`)) return;
     
     try {
       const res = await fetch("/api/admin/orders/update", {
@@ -167,7 +168,7 @@ export default function AdminDashboard() {
         body: JSON.stringify({ 
           id: cleanId,        // ส่ง ID ที่สะอาดแล้ว
           status: newStatus,
-          adminName: adminName
+          adminName: currentAdmin // <--- ส่งชื่อที่ดึงมาจริง ๆ ไปที่ API
         }),
       });
 
