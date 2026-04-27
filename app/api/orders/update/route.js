@@ -2,10 +2,12 @@ import { db } from "@/lib/db";
 
 export async function POST(req) {
   try {
-    const { id, status, adminName } = await req.json();
-
-    // บังคับว่าถ้าไม่มีชื่อส่งมา ให้ใส่ Admin_System ไปก่อนเพื่อทดสอบ
-    const finalAdmin = adminName || "Admin_System";
+    const body = await req.json();
+    
+    // ดึงค่ามาพักไว้ และใส่ค่าหลอกๆ (Default) กันเหนียว
+    const orderId = body.id;
+    const newStatus = body.status;
+    const name = body.adminName || "Admin_A"; // ถ้า adminName เป็น undefined จะใช้ "Admin_A" แทน
 
     const query = `
       UPDATE orders 
@@ -15,11 +17,19 @@ export async function POST(req) {
       WHERE id = ?
     `;
 
-    // ลำดับต้องเป๊ะ: [1.สถานะ, 2.ชื่อ, 3.ID]
-    const [result] = await db.query(query, [status, finalAdmin, id]);
+    // ลำดับต้องเป๊ะ: status -> ?, name -> ?, orderId -> ?
+    const [result] = await db.query(query, [newStatus, name, orderId]);
 
-    return Response.json({ success: true, affected: result.affectedRows });
+    // เช็คใน Console ของ VS Code ว่ามันอัปเดตไปกี่แถว
+    console.log("อัปเดตสำเร็จกี่แถว:", result.affectedRows);
+
+    if (result.affectedRows === 0) {
+      return Response.json({ success: false, error: "หา ID นี้ไม่เจอในระบบ" });
+    }
+
+    return Response.json({ success: true });
   } catch (error) {
+    console.error("SQL ERROR:", error.message);
     return Response.json({ success: false, error: error.message }, { status: 500 });
   }
 }

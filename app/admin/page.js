@@ -142,23 +142,26 @@ export default function AdminDashboard() {
   };
 
   const updateStatus = async (orderId, newStatus) => {
-    if (!confirm(`เปลี่ยนสถานะเป็น "${newStatus}"?`)) return;
-    try {
-      const res = await fetch("/api/admin/orders/update", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          id: orderId, 
-          status: newStatus,
-          adminName: adminName // ใช้ตัวแปร adminName ("Admin_A") ที่ประกาศไว้ด้านบน
-        }),
-      });
-      if (res.ok) {
-        fetchOrders();
-        fetchSummary();
-      }
-    } catch (error) { alert("เกิดข้อผิดพลาด"); }
-  };
+  if (!confirm(`ยืนยันการเปลี่ยนสถานะ?`)) return;
+
+  try {
+    const res = await fetch("/api/admin/orders/update", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ 
+        id: orderId, 
+        status: newStatus,
+        adminName: "Admin_A" // ลองพิมพ์ชื่อตรงๆ ลงไปในนี้เลยเพื่อทดสอบ
+      }),
+    });
+
+    if (res.ok) {
+      fetchOrders(); // โหลดตารางใหม่
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   return (
     <div className="admin-layout">
