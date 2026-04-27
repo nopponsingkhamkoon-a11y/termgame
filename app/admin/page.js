@@ -26,11 +26,24 @@ export default function AdminDashboard() {
 
   useEffect(() => {
   // ดึงชื่อที่เก็บไว้ตอน Login (สมมติเก็บใน localStorage)
-  const savedAdmin = localStorage.getItem("username"); 
-  if (savedAdmin) {
-    setAdminName(savedAdmin);
+  const userData = localStorage.getItem("user"); 
+  
+  if (userData) {
+    try {
+      // 2. แปลงจากข้อความ JSON ให้กลายเป็น Object
+      const parsedUser = JSON.parse(userData);
+      
+      // 3. ดึงเฉพาะ username ออกมาใช้ (ต้องสะกดให้ตรงกับในตาราง users)
+      if (parsedUser.username) {
+        setAdminName(parsedUser.username);
+        console.log("เข้าสู่ระบบโดย:", parsedUser.username);
+      }
+    } catch (error) {
+      console.error("Parse user data failed", error);
+      setAdminName("Admin_A");
+    }
   } else {
-    setAdminName("Unknown Admin"); // กันเหนียวถ้าหาชื่อไม่เจอ
+    setAdminName("Unknown Admin");
   }
 
 
