@@ -25,6 +25,12 @@ export default function AdminDashboard() {
   const [adminName, setAdminName] = useState("Admin_A");
 
   useEffect(() => {
+    // สมมติว่าคุณเก็บชื่อไว้ใน localStorage หลัง Login สำเร็จ
+  const savedAdmin = localStorage.getItem("adminUsername");
+  if (savedAdmin) {
+    setAdminName(savedAdmin);
+  }
+
     fetchOrders();
     fetchGames();
     fetchPackages();
@@ -158,7 +164,7 @@ export default function AdminDashboard() {
         body: JSON.stringify({ 
           id: cleanId,        // ส่ง ID ที่สะอาดแล้ว
           status: newStatus,
-          adminName: "Admin_A" // ลองใส่ชื่อตรงๆ เพื่อเช็คผล
+          adminName: adminName
         }),
       });
 
