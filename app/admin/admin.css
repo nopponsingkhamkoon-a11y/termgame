@@ -67,6 +67,31 @@ body {
   margin-top: 20px;
 }
 
+/* จัดกล่องประวัติผู้ดำเนินการ */
+.admin-log {
+  display: flex;
+  flex-direction: column; /* จัดชื่อกับเวลาเรียงลงมา */
+  align-items: center;    /* จัดให้อยู่ตรงกลางแนวนอน */
+  justify-content: center; /* จัดให้อยู่ตรงกลางแนวตั้ง */
+  text-align: center;
+  gap: 4px;                /* ระยะห่างระหว่างชื่อกับเวลา */
+}
+
+/* ปรับแต่งชื่อแอดมิน */
+.admin-user {
+  font-weight: bold;
+  color: #00ffcc;          /* สีเขียวสว่างให้ดูเด่นขึ้น */
+  font-size: 0.95rem;
+  text-transform: capitalize; /* ให้ตัวแรกเป็นตัวใหญ่ (ถ้าต้องการ) */
+}
+
+/* ปรับแต่งวันเวลา */
+.admin-time {
+  font-size: 0.8rem;
+  color: #888;             /* สีเทาอ่อนลงหน่อยเพื่อให้ชื่อเด่นกว่า */
+  white-space: nowrap;     /* กันไม่ให้เวลาขึ้นบรรทัดใหม่ */
+}
+
 .logout-btn:hover { background: #e74c3c; color: #fff; }
 
 /* =========================================
