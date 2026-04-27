@@ -1,11 +1,3 @@
-จัดให้ครับ! ผมรวมโค้ด CSS ทั้งหมดที่คุณส่งมา พร้อมกับปรับแต่งส่วน จัดการออเดอร์ (ปุ่ม ✔️ และ ❌) ให้ดูสวยงาม ทันสมัย และเข้ากับธีมส่วนอื่น ๆ ตามที่คุณต้องการ โดยที่ โครงสร้างเดิมไม่หายไปไหน ครับ
-
-คัดลอกโค้ดนี้ไปวางทับในไฟล์ admin.css ได้เลย:
-
-CSS
-/* =========================================
-   1. GLOBAL STYLES (พื้นฐาน)
-   ========================================= */
 body {
   margin: 0;
   background-color: #0a0514;
@@ -316,18 +308,32 @@ tr:hover { background: rgba(255, 255, 255, 0.01); }
   color: white;
 }
 
+/* ปรับระยะห่างระหว่างปุ่มใน Modal */
 .modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  margin-top: 25px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px; /* เพิ่มระยะห่างระหว่างปุ่มยกเลิกกับบันทึก */
+    margin-top: 30px;
 }
 
 .btn-cancel {
-  background: none;
-  border: none;
-  color: #9ca3af;
-  cursor: pointer;
+    background: rgba(255, 255, 255, 0.05) !important; /* พื้นหลังโปร่งแสงนิดๆ */
+    color: #9ca3af !important; /* สีเทาอ่อน */
+    border: 1px solid rgba(255, 255, 255, 0.2) !important; /* เส้นขอบบางๆ */
+    padding: 10px 20px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-cancel:hover {
+    background: rgba(231, 76, 60, 0.1) !important; /* เปลี่ยนเป็นสีแดงจางๆ เมื่อ Hover */
+    color: #e74c3c !important; /* เปลี่ยนตัวหนังสือเป็นสีแดง */
+    border-color: #e74c3c !important; /* ขอบสีแดง */
+    box-shadow: 0 0 15px rgba(231, 76, 60, 0.2);
 }
 
 .btn-save {
