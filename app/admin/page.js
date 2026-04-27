@@ -18,7 +18,9 @@ export default function AdminDashboard() {
   const [pkgLabel, setPkgLabel] = useState("");
   const [pkgPrice, setPkgPrice] = useState("");
 
-  // โหลดข้อมูลทั้งหมดรวมถึงสรุปยอด
+  const [editGame, setEditGame] = useState(null);
+  const [editPkg, setEditPkg] = useState(null);
+
   useEffect(() => {
     fetchOrders();
     fetchGames();
@@ -64,46 +66,39 @@ export default function AdminDashboard() {
 
   const addPackage = async (e) => {
     e.preventDefault();
-    if (!selectedGameName || !pkgLabel || !pkgPrice) {
-      return alert("กรุณากรอกข้อมูลให้ครบถ้วน");
-    }
-
     try {
       const res = await fetch("/api/admin/packages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          game_name: selectedGameName, 
-          name: pkgLabel, 
-          price: pkgPrice 
-        }),
+        body: JSON.stringify({ game_name: selectedGameName, name: pkgLabel, price: pkgPrice }),
       });
-
-      const data = await res.json();
       if (res.ok) {
-        alert("✅ เพิ่มแพ็กเกจสำเร็จ");
-        setPkgLabel(""); 
-        setPkgPrice("");
-        setSelectedGameName("");
+        alert("✅ เพิ่มสำเร็จ");
+        setPkgLabel(""); setPkgPrice("");
         fetchPackages();
-      } else {
-        alert("❌ เกิดข้อผิดพลาด: " + (data.error || "ไม่สามารถเพิ่มได้"));
       }
-    } catch (error) {
-      alert("❌ เชื่อมต่อเซิร์ฟเวอร์ไม่ได้");
-    }
+    } catch (error) { alert("❌ เชื่อมต่อเซิร์ฟเวอร์ไม่ได้"); }
+  };
+
+  const handleUpdatePkg = async () => {
+    try {
+      const res = await fetch("/api/admin/packages", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editPkg),
+      });
+      if (res.ok) {
+        setEditPkg(null);
+        fetchPackages();
+      }
+    } catch (error) { alert("แก้ไขไม่สำเร็จ"); }
   };
 
   const deletePackage = async (id) => {
-    if (!confirm("ต้องการลบแพ็กเกจนี้ใช่หรือไม่?")) return;
+    if (!confirm("ลบแพ็กเกจนี้?")) return;
     try {
-      const res = await fetch(`/api/admin/packages?id=${id}`, {
-        method: "DELETE",
-      });
-      if (res.ok) {
-        alert("ลบสำเร็จ");
-        fetchPackages();
-      }
+      const res = await fetch(`/api/admin/packages?id=${id}`, { method: "DELETE" });
+      if (res.ok) fetchPackages();
     } catch (error) { alert("ลบล้มเหลว"); }
   };
 
@@ -121,6 +116,18 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleUpdateGame = async () => {
+    const res = await fetch("/api/admin/games", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(editGame),
+    });
+    if (res.ok) {
+      setEditGame(null);
+      fetchGames();
+    }
+  };
+
   const deleteGame = async (id) => {
     if (!confirm("ลบเกมนี้?")) return;
     const res = await fetch("/api/admin/games", {
@@ -132,7 +139,7 @@ export default function AdminDashboard() {
   };
 
   const updateStatus = async (orderId, newStatus) => {
-    if (!confirm(`คุณแน่ใจใช่ไหมที่จะเปลี่ยนสถานะเป็น "${newStatus}"?`)) return;
+    if (!confirm(`เปลี่ยนสถานะเป็น "${newStatus}"?`)) return;
     try {
       const res = await fetch("/api/admin/orders/update", {
         method: "POST",
@@ -140,11 +147,10 @@ export default function AdminDashboard() {
         body: JSON.stringify({ id: orderId, status: newStatus }),
       });
       if (res.ok) {
-        alert("อัปเดตสถานะสำเร็จ!");
         fetchOrders();
-        fetchSummary(); // อัปเดตยอดรวมใหม่หลังจากเปลี่ยนสถานะสำเร็จ
+        fetchSummary();
       }
-    } catch (error) { alert("เกิดข้อผิดพลาดในการอัปเดต"); }
+    } catch (error) { alert("เกิดข้อผิดพลาด"); }
   };
 
   return (
@@ -153,7 +159,7 @@ export default function AdminDashboard() {
         <h2>🛡️ Admin Panel</h2>
         <ul>
           <li className={view === "orders" ? "active" : ""} onClick={() => setView("orders")}>📦 จัดการออเดอร์</li>
-          <li className={view === "games" ? "active" : ""} onClick={() => setView("games")}>🎮 จัดการเกม</li>
+          <li className={li === "games" ? "active" : ""} onClick={() => setView("games")}>🎮 จัดการเกม</li>
           <li className={view === "packages" ? "active" : ""} onClick={() => setView("packages")}>💰 จัดการแพ็กเกจ</li>
         </ul>
         <button className="logout-btn" onClick={() => window.location.href = "/"}>กลับหน้าหลัก</button>
@@ -164,8 +170,6 @@ export default function AdminDashboard() {
         {view === "orders" && (
           <>
             <h1>รายการสั่งซื้อ</h1>
-
-            {/* 🌟 เพิ่มส่วน Summary Cards ตรงนี้ (ของใหม่) */}
             <div className="summary-container">
               <div className="summary-card">
                 <span className="summary-label">💰 ยอดขายวันนี้</span>
@@ -185,13 +189,7 @@ export default function AdminDashboard() {
               <table className="admin-table">
                 <thead>
                   <tr>
-                    <th>ID</th>
-                    <th>ลูกค้า</th>
-                    <th>เกม</th>
-                    <th>ยอดเงิน</th>
-                    <th>สลิป</th>
-                    <th>สถานะ</th>
-                    <th>จัดการ</th>
+                    <th>ID</th><th>ลูกค้า</th><th>เกม</th><th>ยอดเงิน</th><th>สลิป</th><th>สถานะ</th><th>จัดการ</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -206,9 +204,7 @@ export default function AdminDashboard() {
                       </td>
                       <td>{order.game}</td>
                       <td className="price-cell">{order.amount} ฿</td>
-                      <td>
-                        <a href={order.slip} target="_blank" rel="noreferrer" className="view-slip">🖼️ ดูสลิป</a>
-                      </td>
+                      <td><a href={order.slip} target="_blank" rel="noreferrer" className="view-slip">🖼️ ดูสลิป</a></td>
                       <td><span className={`status-badge ${order.status}`}>{order.status}</span></td>
                       <td>
                         {order.status === "รอเติม" && (
@@ -245,7 +241,10 @@ export default function AdminDashboard() {
                     <tr key={g.id}>
                       <td><img src={g.image_url} alt="" style={{ width: '50px' }} /></td>
                       <td>{g.name}</td>
-                      <td><button className="btn-danger" onClick={() => deleteGame(g.id)}>ลบ</button></td>
+                      <td>
+                        <button onClick={() => setEditGame(g)} className="btn-edit-small">แก้ไข</button>
+                        <button className="btn-danger" onClick={() => deleteGame(g.id)}>ลบ</button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -278,13 +277,61 @@ export default function AdminDashboard() {
                       <td>{pkg.game_name}</td>
                       <td>{pkg.name}</td>
                       <td>{pkg.price}฿</td>
-                      <td><button className="btn-danger" onClick={() => deletePackage(pkg.id)}>ลบ</button></td>
+                      <td>
+                        <button onClick={() => setEditPkg(pkg)} className="btn-edit-small">แก้ไข</button>
+                        <button className="btn-danger" onClick={() => deletePackage(pkg.id)}>ลบ</button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
           </>
+        )}
+
+        {/* --- Modals อยู่ล่างสุดเพื่อให้ซ้อนทับได้ถูกต้อง --- */}
+        {editGame && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <h2>แก้ไขข้อมูลเกม</h2>
+              <div className="modal-group">
+                <label>ชื่อเกม</label>
+                <input className="modal-input" value={editGame.name} onChange={(e) => setEditGame({...editGame, name: e.target.value})} />
+              </div>
+              <div className="modal-group">
+                <label>URL รูปภาพ</label>
+                <input className="modal-input" value={editGame.image_url} onChange={(e) => setEditGame({...editGame, image_url: e.target.value})} />
+              </div>
+              <div className="modal-group">
+                <label>ลำดับ (Priority)</label>
+                <input type="number" className="modal-input" value={editGame.priority || 0} onChange={(e) => setEditGame({...editGame, priority: e.target.value})} />
+              </div>
+              <div className="modal-actions">
+                <button className="btn-cancel" onClick={() => setEditGame(null)}>ยกเลิก</button>
+                <button className="btn-save" onClick={handleUpdateGame}>บันทึก</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {editPkg && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <h2>แก้ไขแพ็กเกจ</h2>
+              <div className="modal-group">
+                <label>ชื่อแพ็กเกจ</label>
+                <input className="modal-input" value={editPkg.name} onChange={(e) => setEditPkg({...editPkg, name: e.target.value})} />
+              </div>
+              <div className="modal-group">
+                <label>ราคา</label>
+                <input type="number" className="modal-input" value={editPkg.price} onChange={(e) => setEditPkg({...editPkg, price: e.target.value})} />
+              </div>
+              <div className="modal-actions">
+                <button className="btn-cancel" onClick={() => setEditPkg(null)}>ยกเลิก</button>
+                <button className="btn-save" onClick={handleUpdatePkg}>บันทึก</button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </div>

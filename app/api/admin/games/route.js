@@ -28,6 +28,33 @@ export async function POST(req) {
   }
 }
 
+export async function PUT(req) {
+  try {
+    const { id, name, image_url, priority } = await req.json();
+
+    if (!id) {
+      return Response.json({ success: false, error: "ไม่พบ ID เกมที่ต้องการแก้ไข" });
+    }
+
+    const query = `
+      UPDATE games 
+      SET name = ?, image_url = ?, priority = ? 
+      WHERE id = ?
+    `;
+
+    await db.query(query, [name, image_url, priority, id]);
+
+    return Response.json({ success: true });
+
+  } catch (error) {
+    console.error("Update Game Error:", error);
+    return Response.json({ 
+      success: false, 
+      error: "เกิดข้อผิดพลาดในการอัปเดต: " + error.message 
+    }, { status: 500 });
+  }
+}
+
 // DELETE: ลบเกม
 export async function DELETE(req) {
   try {

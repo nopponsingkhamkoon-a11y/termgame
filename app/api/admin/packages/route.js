@@ -24,6 +24,33 @@ export async function POST(req) {
   }
 }
 
+export async function PUT(req) {
+  try {
+    const { id, name, price } = await req.json();
+
+    if (!id) {
+      return Response.json({ success: false, error: "ไม่พบ ID แพ็กเกจที่ต้องการแก้ไข" });
+    }
+
+    const query = `
+      UPDATE packages 
+      SET name = ?, price = ? 
+      WHERE id = ?
+    `;
+
+    await db.query(query, [name, price, id]);
+
+    return Response.json({ success: true });
+
+  } catch (error) {
+    console.error("Update Package Error:", error);
+    return Response.json({ 
+      success: false, 
+      error: "เกิดข้อผิดพลาด: " + error.message 
+    }, { status: 500 });
+  }
+}
+
 // ลบแพ็กเกจ
 export async function DELETE(req) {
   try {
