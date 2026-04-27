@@ -4,7 +4,7 @@ export async function POST(req) {
   try {
     const body = await req.json();
     console.log("--- Debug Update Order ---");
-    console.log("Data received:", body); // ดูที่จอ Terminal ว่า adminName มีค่าไหม
+    console.log("Data received:", body); 
 
     const { id, status, adminName } = body;
 
@@ -12,7 +12,7 @@ export async function POST(req) {
       return Response.json({ success: false, error: "Missing ID or Status" }, { status: 400 });
     }
 
-    // ใช้ 'System Admin' เป็นค่าเริ่มต้นหาก adminName ว่าง
+    // แก้ชื่อตัวแปรให้ตรงกัน
     const finalAdminName = adminName || "System Admin";
 
     const query = `
@@ -23,6 +23,7 @@ export async function POST(req) {
       WHERE id = ?
     `;
 
+    // *** แก้จาก finalAdmin เป็น finalAdminName ***
     const [result] = await db.query(query, [status, finalAdminName, id]);
 
     return Response.json({ success: true });

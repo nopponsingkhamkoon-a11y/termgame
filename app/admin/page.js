@@ -21,7 +21,7 @@ export default function AdminDashboard() {
   const [editGame, setEditGame] = useState(null);
   const [editPkg, setEditPkg] = useState(null);
 
-   // ดึงชื่อจากคนที่ Login จริงๆ
+  // ดึงชื่อจากคนที่ Login จริงๆ (ตอนนี้ตั้งเป็นค่าเริ่มต้นไว้)
   const [adminName, setAdminName] = useState("Admin_A");
 
   useEffect(() => {
@@ -43,7 +43,6 @@ export default function AdminDashboard() {
     try {
       const res = await fetch("/api/admin/orders");
       const data = await res.json();
-      // ปรับให้รองรับข้อมูล orders ที่ส่งกลับมาพร้อม success status
       if (res.ok) setOrders(data.orders || (Array.isArray(data) ? data : []));
     } catch (error) { console.error("Fetch error:", error); }
     finally { setLoading(false); }
@@ -143,7 +142,6 @@ export default function AdminDashboard() {
   };
 
   const updateStatus = async (orderId, newStatus) => {
-    const testAdminName = "Admin_A";
     if (!confirm(`เปลี่ยนสถานะเป็น "${newStatus}"?`)) return;
     try {
       const res = await fetch("/api/admin/orders/update", {
@@ -152,7 +150,7 @@ export default function AdminDashboard() {
         body: JSON.stringify({ 
           id: orderId, 
           status: newStatus,
-          adminName: testAdminName // ส่งชื่อ Admin ไปบันทึก
+          adminName: adminName // ใช้ตัวแปร adminName ("Admin_A") ที่ประกาศไว้ด้านบน
         }),
       });
       if (res.ok) {
@@ -204,7 +202,7 @@ export default function AdminDashboard() {
                     <th>ยอดเงิน</th>
                     <th>สลิป</th>
                     <th>สถานะ</th>
-                    <th>ผู้ดำเนินการ / เวลาอัปเดต</th> {/* คอลัมน์ที่เพิ่ม */}
+                    <th>ผู้ดำเนินการ / เวลาอัปเดต</th>
                     <th>จัดการ</th>
                   </tr>
                 </thead>
@@ -223,7 +221,6 @@ export default function AdminDashboard() {
                       <td><a href={order.slip} target="_blank" rel="noreferrer" className="view-slip">🖼️ ดูสลิป</a></td>
                       <td><span className={`status-badge ${order.status}`}>{order.status}</span></td>
                       <td>
-                        {/* แสดงข้อมูล Admin และเวลา */}
                         <div className="admin-log">
                           <div className="admin-user">{order.updated_by || "-"}</div>
                           <div className="admin-time">
@@ -314,7 +311,7 @@ export default function AdminDashboard() {
           </>
         )}
 
-        {/* --- Modals อยู่ล่างสุดเพื่อให้ซ้อนทับได้ถูกต้อง --- */}
+        {/* Modals */}
         {editGame && (
           <div className="modal-overlay">
             <div className="modal-content">
