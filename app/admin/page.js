@@ -159,7 +159,7 @@ export default function AdminDashboard() {
         <h2>🛡️ Admin Panel</h2>
         <ul>
           <li className={view === "orders" ? "active" : ""} onClick={() => setView("orders")}>📦 จัดการออเดอร์</li>
-          <li className={li === "games" ? "active" : ""} onClick={() => setView("games")}>🎮 จัดการเกม</li>
+          <li className={view === "games" ? "active" : ""} onClick={() => setView("games")}>🎮 จัดการเกม</li>
           <li className={view === "packages" ? "active" : ""} onClick={() => setView("packages")}>💰 จัดการแพ็กเกจ</li>
         </ul>
         <button className="logout-btn" onClick={() => window.location.href = "/"}>กลับหน้าหลัก</button>
