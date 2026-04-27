@@ -242,9 +242,9 @@ export default function AdminDashboard() {
                       <td><img src={g.image_url} alt="" style={{ width: '50px' }} /></td>
                       <td>{g.name}</td>
                       <td>
-                        <button onClick={() => setEditGame(g)} className="btn-edit-small">แก้ไข</button>
-                        <button className="btn-danger" onClick={() => deleteGame(g.id)}>ลบ</button>
-                      </td>
+                      <button onClick={() => setEditGame(g)} className="btn-edit-small">แก้ไข</button>
+                      <button onClick={() => deleteGame(g.id)} className="btn-danger">ลบ</button>
+                    </td>
                     </tr>
                   ))}
                 </tbody>
