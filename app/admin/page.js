@@ -234,38 +234,55 @@ export default function AdminDashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {orders.map((order) => (
-                    <tr key={order.id}>
-                      <td>#{order.id}</td>
-                      <td>
-                        <div className="user-cell">
-                          <strong>{order.username || "ทั่วไป"}</strong>
-                          <span>ID: {order.playerId}</span>
+              {orders.length > 0 ? (
+                orders.map((order) => (
+                  <tr key={order.id}>
+                    <td>#{order.id}</td>
+                    <td>
+                      <div className="user-cell">
+                        <strong>{order.username || "ทั่วไป"}</strong>
+                        <span>ID: {order.playerId}</span>
+                      </div>
+                    </td>
+                    <td>{order.game}</td>
+                    <td className="price-cell">{order.amount} ฿</td>
+                    <td>
+                      <a href={order.slip} target="_blank" rel="noreferrer" className="view-slip">
+                        🖼️ ดูสลิป
+                      </a>
+                    </td>
+                    <td>
+                      <span className={`status-badge ${order.status}`}>{order.status}</span>
+                    </td>
+                    <td>
+                      {/* ส่วนแสดง Log แอดมิน - ใส่เครื่องหมาย ? เพื่อกัน Error */}
+                      <div className="admin-log">
+                        <div className="admin-user">{order?.updated_by || "-"}</div>
+                        <div className="admin-time">
+                          {order?.updated_at 
+                            ? new Date(order.updated_at).toLocaleString("th-TH") 
+                            : "รอดำเนินการ"}
                         </div>
-                      </td>
-                      <td>{order.game}</td>
-                      <td className="price-cell">{order.amount} ฿</td>
-                      <td><a href={order.slip} target="_blank" rel="noreferrer" className="view-slip">🖼️ ดูสลิป</a></td>
-                      <td><span className={`status-badge ${order.status}`}>{order.status}</span></td>
-                      <td>
-                        <div className="admin-log">
-                          <div className="admin-user">{order.updated_by || "-"}</div>
-                          <div className="admin-time">
-                            {order.updated_at ? new Date(order.updated_at).toLocaleString("th-TH") : "รอดำเนินการ"}
-                          </div>
+                      </div>
+                    </td>
+                    <td>
+                      {order.status === "รอเติม" && (
+                        <div className="action-btns">
+                          <button onClick={() => updateStatus(order.id, "สำเร็จ")} className="btn-approve">✔️</button>
+                          <button onClick={() => updateStatus(order.id, "ยกเลิก")} className="btn-reject">❌</button>
                         </div>
-                      </td>
-                      <td>
-                        {order.status === "รอเติม" && (
-                          <div className="action-btns">
-                            <button onClick={() => updateStatus(order.id, "สำเร็จ")} className="btn-approve">✔️</button>
-                            <button onClick={() => updateStatus(order.id, "ยกเลิก")} className="btn-reject">❌</button>
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="8" style={{ textAlign: "center", padding: "20px" }}>
+                    {loading ? "กำลังโหลดข้อมูล..." : "ไม่พบรายการสั่งซื้อ"}
+                  </td>
+                </tr>
+              )}
+            </tbody>
               </table>
             </div>
           </>
