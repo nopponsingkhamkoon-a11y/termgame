@@ -142,26 +142,39 @@ export default function AdminDashboard() {
   };
 
   const updateStatus = async (orderId, newStatus) => {
-  if (!confirm(`ยืนยันการทำรายการ?`)) return;
+    // ดักไว้ก่อน: ถ้า orderId มาเป็น "#150017" ให้ตัดเครื่องหมาย # ออก
+    const cleanId = typeof orderId === "string" ? orderId.replace("#", "") : orderId;
 
-  try {
-    const res = await fetch("/api/admin/orders/update", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ 
-        id: orderId,         // ตรวจสอบว่า orderId มีค่า (ไม่ใช่ undefined)
-        status: newStatus, 
-        adminName: "Admin_A" // ลองใส่ชื่อตรงๆ ไว้ก่อนเพื่อทดสอบ
-      }),
-    });
+    console.log("--- กำลังส่งข้อมูลไป API ---");
+    console.log("ID ที่ส่ง:", cleanId);
+    console.log("สถานะที่จะเปลี่ยน:", newStatus);
 
-    if (res.ok) {
-      fetchOrders(); // โหลดตารางใหม่เพื่อให้ชื่อแอดมินโชว์
+    if (!confirm(`ยืนยันการเปลี่ยนสถานะเป็น "${newStatus}"?`)) return;
+    
+    try {
+      const res = await fetch("/api/admin/orders/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          id: cleanId,        // ส่ง ID ที่สะอาดแล้ว
+          status: newStatus,
+          adminName: "Admin_A" // ลองใส่ชื่อตรงๆ เพื่อเช็คผล
+        }),
+      });
+
+      if (res.ok) {
+        alert("อัปเดตสำเร็จ!");
+        fetchOrders(); // โหลดตารางใหม่
+      } else {
+        const errorData = await res.json();
+        console.error("API Error:", errorData);
+        alert("อัปเดตไม่สำเร็จ: " + (errorData.error || "Unknown error"));
+      }
+    } catch (error) { 
+      console.error("Fetch error:", error);
+      alert("เชื่อมต่อ API ไม่ได้"); 
     }
-  } catch (err) {
-    console.error(err);
-  }
-};
+  };
 
   return (
     <div className="admin-layout">
