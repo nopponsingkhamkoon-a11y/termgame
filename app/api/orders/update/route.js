@@ -2,10 +2,12 @@ import { db } from "@/lib/db";
 
 export async function POST(req) {
   try {
-    const { id, status, adminName } = await req.json();
-
-    // บังคับให้เป็น Admin_A ถ้าค่าส่งมาว่าง
-    const finalAdmin = adminName || "Admin_A";
+    const body = await req.json();
+    
+    // 1. ดึงค่ามาพักไว้ในตัวแปร (ชื่อต้องตรงกับที่จะใช้ข้างล่าง)
+    const orderId = body.id;
+    const status = body.status; // ใช้ชื่อ status ให้ตรงกับใน array [ ] ด้านล่าง
+    const adminName = body.adminName || "Admin_A";
 
     const query = `
       UPDATE orders 
@@ -15,15 +17,21 @@ export async function POST(req) {
       WHERE id = ?
     `;
 
-    // ใช้ db.query และส่งค่าไปตามลำดับ ?
-    const [result] = await db.query(query, [status, finalAdmin, id]);
+    // 2. ลำดับใน [ ] ต้องตรงกับ ? ใน query: status -> ?, adminName -> ?, orderId -> ?
+    const [result] = await db.query(query, [status, adminName, orderId]);
 
-    if (result.affectedRows === 0) {
-      return Response.json({ success: false, error: "ไม่พบรายการที่ระบุ (ID ไม่ตรง)" }, { status: 404 });
+    // 3. ตรวจสอบว่ามีแถวที่ถูกแก้ไขจริงไหม
+    if (result && result.affectedRows > 0) {
+      return Response.json({ success: true });
+    } else {
+      return Response.json({ 
+        success: false, 
+        error: "ไม่พบรายการสั่งซื้อที่ระบุ (ID อาจไม่ตรงในระบบ)" 
+      });
     }
 
-    return Response.json({ success: true });
   } catch (error) {
+    console.error("Update Error:", error.message);
     return Response.json({ success: false, error: error.message }, { status: 500 });
   }
 }
