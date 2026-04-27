@@ -142,24 +142,24 @@ export default function AdminDashboard() {
   };
 
   const updateStatus = async (orderId, newStatus) => {
-  if (!confirm(`ยืนยันการเปลี่ยนสถานะ?`)) return;
+  if (!confirm(`ยืนยันการทำรายการ?`)) return;
 
   try {
     const res = await fetch("/api/admin/orders/update", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ 
-        id: orderId, 
-        status: newStatus,
-        adminName: "Admin_A" // ลองพิมพ์ชื่อตรงๆ ลงไปในนี้เลยเพื่อทดสอบ
+        id: orderId,         // ตรวจสอบว่า orderId มีค่า (ไม่ใช่ undefined)
+        status: newStatus, 
+        adminName: "Admin_A" // ลองใส่ชื่อตรงๆ ไว้ก่อนเพื่อทดสอบ
       }),
     });
 
     if (res.ok) {
-      fetchOrders(); // โหลดตารางใหม่
+      fetchOrders(); // โหลดตารางใหม่เพื่อให้ชื่อแอดมินโชว์
     }
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
   }
 };
 
