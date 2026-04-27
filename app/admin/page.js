@@ -143,7 +143,7 @@ export default function AdminDashboard() {
   };
 
   const updateStatus = async (orderId, newStatus) => {
-    const currentAdmin = "Admin_A";
+    const testAdminName = "Admin_A";
     if (!confirm(`เปลี่ยนสถานะเป็น "${newStatus}"?`)) return;
     try {
       const res = await fetch("/api/admin/orders/update", {
@@ -152,7 +152,7 @@ export default function AdminDashboard() {
         body: JSON.stringify({ 
           id: orderId, 
           status: newStatus,
-          adminName: adminName // ส่งชื่อ Admin ไปบันทึก
+          adminName: testAdminName // ส่งชื่อ Admin ไปบันทึก
         }),
       });
       if (res.ok) {
